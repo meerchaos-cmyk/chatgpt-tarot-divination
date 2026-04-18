@@ -1,29 +1,32 @@
-# Chatgpt Tarot Divination
+# ChatGPT Tarot Divination (Frontend)
 
-This template should help get you started developing with Vue 3 in Vite.
+React + Vite 前端项目。
 
-## Recommended IDE Setup
+## 本地开发
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
+```bash
 pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
 pnpm dev
 ```
 
-### Compile and Minify for Production
+## 构建与预览
 
-```sh
+```bash
 pnpm build
+pnpm preview
 ```
+
+## 部署后打开子路由出现 404（NOT_FOUND）怎么办？
+
+这是单页应用（SPA）常见问题：直接访问 `/divination/tarot` 这类前端路由时，托管平台会尝试查找同名物理文件，导致 404。
+
+本仓库已提供两种回退配置：
+
+- **Vercel**：`vercel.json` 中将所有路径重写到 `index.html`。
+- **Netlify / 静态托管兼容**：`public/_redirects` 中配置 `/* /index.html 200`。
+
+部署后请确认：
+
+1. 构建输出目录为 `dist`
+2. 平台使用 `pnpm build` 作为构建命令
+3. 重写规则已生效（清缓存后再访问子路由）
