@@ -1,0 +1,5 @@
+{
+  "installCommand": "cd frontend && pnpm install",
+  "buildCommand": "cd frontend && VITE_ROUTER_MODE=hash pnpm build",
+  "outputDirectory": "frontend/dist"
+}

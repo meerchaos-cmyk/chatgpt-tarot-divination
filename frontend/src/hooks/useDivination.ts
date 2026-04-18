@@ -4,6 +4,7 @@ import MarkdownIt from 'markdown-it'
 import { useGlobalState } from '@/store'
 import { saveHistory } from '@/utils/divinationHistory'
 import { getDivinationOption } from '@/config/constants'
+import { buildDivinationBody, streamDirectFromOpenAI } from '@/lib/pureFrontendDivination'
 
 const API_BASE = import.meta.env.VITE_API_BASE || ''
 const IS_TAURI = import.meta.env.VITE_IS_TAURI || ''
@@ -48,12 +49,40 @@ export function useDivination(promptType: string) {
         return
       }
 
+      const body = buildDivinationBody(promptType, params)
+
+      if (!API_BASE) {
+        await streamDirectFromOpenAI({
+          body,
+          customOpenAISettings,
+          onToken(token) {
+            tmpResultBuffer += token
+            setResult(md.render(tmpResultBuffer))
+            if (firstChunk) {
+              firstChunk = false
+              setResultLoading(false)
+              setLoading(false)
+            }
+          },
+        })
+        setStreaming(false)
+        if (tmpResultBuffer && promptType) {
+          const config = getDivinationOption(promptType)
+          if (config) {
+            saveHistory({
+              type: promptType,
+              title: config.title,
+              prompt: params.prompt || '',
+              result: tmpResultBuffer,
+            })
+          }
+        }
+        return
+      }
+
       await fetchEventSource(`${API_BASE}/api/divination`, {
         method: 'POST',
-        body: JSON.stringify({
-          ...params,
-          prompt_type: promptType,
-        }),
+        body: JSON.stringify(body),
         headers,
         async onopen(response) {
           if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
