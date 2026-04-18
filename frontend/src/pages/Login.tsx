@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card'
@@ -16,17 +16,7 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
-  useEffect(() => {
-    if (login_type === 'github') {
-      const code = searchParams.get('code')
-      if (code) {
-        handleGithubCallback(code)
-      }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [login_type, searchParams])
-
-  const handleGithubCallback = async (code: string) => {
+  const handleGithubCallback = useCallback(async (code: string) => {
     setLoading(true)
     try {
       const response = await fetch(`${API_BASE}/api/v1/oauth`, {
@@ -48,13 +38,23 @@ export default function LoginPage() {
       const token = await response.json()
       setJwt(token)
       window.location.href = '/'
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
-      setError(`登录失败: ${err.message || '未知错误'}`)
+      const message = err instanceof Error ? err.message : '未知错误'
+      setError(`登录失败: ${message}`)
     } finally {
       setLoading(false)
     }
-  }
+  }, [setJwt])
+
+  useEffect(() => {
+    if (login_type === 'github') {
+      const code = searchParams.get('code')
+      if (code) {
+        handleGithubCallback(code)
+      }
+    }
+  }, [handleGithubCallback, login_type, searchParams])
 
   const onGithubLogin = async () => {
     try {
@@ -74,9 +74,9 @@ export default function LoginPage() {
 
       const redirectUrl = await response.json()
       window.location.href = redirectUrl
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err)
-      setError(err.message || '登录失败')
+      setError(err instanceof Error ? err.message : '登录失败')
     } finally {
       setLoading(false)
     }

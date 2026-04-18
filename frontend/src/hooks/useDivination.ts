@@ -9,6 +9,11 @@ const API_BASE = import.meta.env.VITE_API_BASE || ''
 const IS_TAURI = import.meta.env.VITE_IS_TAURI || ''
 const md = new MarkdownIt()
 
+export interface DivinationSubmitParams {
+  prompt: string
+  [key: string]: unknown
+}
+
 export function useDivination(promptType: string) {
   const { jwt, customOpenAISettings } = useGlobalState()
   const [result, setResult] = useState('')
@@ -17,7 +22,7 @@ export function useDivination(promptType: string) {
   const [streaming, setStreaming] = useState(false)
   const [showDrawer, setShowDrawer] = useState(false)
 
-  const onSubmit = async (params: any) => {
+  const onSubmit = async (params: DivinationSubmitParams) => {
     try {
       setLoading(true)
       setResultLoading(true)
@@ -54,7 +59,9 @@ export function useDivination(promptType: string) {
           if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
             setStreaming(true)
             return
-          } else if (response.status >= 400) {
+          }
+
+          if (response.status >= 400) {
             throw new Error(`${response.status} ${await response.text()}`)
           }
         },
@@ -66,11 +73,10 @@ export function useDivination(promptType: string) {
             return
           }
           try {
-            const newContent = JSON.parse(msg.data)
+            const newContent = JSON.parse(msg.data) as string
             tmpResultBuffer += newContent
             setResult(md.render(tmpResultBuffer))
 
-            // 收到第一个词立即结束加载状态
             if (firstChunk) {
               firstChunk = false
               setResultLoading(false)
@@ -82,7 +88,6 @@ export function useDivination(promptType: string) {
         },
         onclose() {
           setStreaming(false)
-          // 保存历史记录（仅当有结果时）
           if (tmpResultBuffer && promptType) {
             const config = getDivinationOption(promptType)
             if (config) {
@@ -101,9 +106,10 @@ export function useDivination(promptType: string) {
           throw new Error(`占卜失败: ${err.message}`)
         },
       })
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error)
-      setResult(error.message || '占卜失败')
+      const message = error instanceof Error ? error.message : '占卜失败'
+      setResult(message)
       setStreaming(false)
     } finally {
       setLoading(false)
