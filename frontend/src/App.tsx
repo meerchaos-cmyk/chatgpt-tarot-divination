@@ -36,7 +36,8 @@ function App() {
   const fetchSettings = useCallback(async () => {
     setLoading(true)
     try {
-      const response = await fetch(`${API_BASE}/api/v1/settings`, {
+      const settingsUrl = `${API_BASE}/api/v1/settings`
+      const response = await fetch(settingsUrl, {
         method: 'GET',
         headers: {
           Authorization: `Bearer ${jwt || 'xxx'}`,
@@ -44,6 +45,13 @@ function App() {
         },
       })
       if (response.ok) {
+        const contentType = response.headers.get('content-type') || ''
+        if (!contentType.includes('application/json')) {
+          const hint = API_BASE
+            ? `接口 ${settingsUrl} 返回了非 JSON 内容，请确认该地址是否为后端 API。`
+            : '当前站点返回了 HTML（不是 JSON），请在部署平台配置 VITE_API_BASE 指向后端 API 域名。'
+          throw new Error(hint)
+        }
         const data = await response.json()
         setSettings({ ...data, fetched: true, error: null })
       } else {
