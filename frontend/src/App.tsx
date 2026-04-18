@@ -36,6 +36,23 @@ function App() {
   const fetchSettings = useCallback(async () => {
     setLoading(true)
     try {
+      if (!API_BASE) {
+        const fallbackApiBase = import.meta.env.VITE_FALLBACK_API_BASE || import.meta.env.VITE_DEFAULT_API_BASE || ''
+        const fallbackModel = import.meta.env.VITE_FALLBACK_MODEL || import.meta.env.VITE_DEFAULT_MODEL || 'gpt-4o-mini'
+        const fallbackApiKey = import.meta.env.VITE_FALLBACK_API_KEY || ''
+        const rateLimitPerHour = Number(import.meta.env.VITE_RATE_LIMIT_PER_HOUR || 10)
+        setSettings({
+          fetched: true,
+          error: null,
+          enable_login: false,
+          enable_rate_limit: Boolean(fallbackApiKey),
+          rate_limit: `${Number.isFinite(rateLimitPerHour) ? rateLimitPerHour : 10}/hour`,
+          default_api_base: fallbackApiBase,
+          default_model: fallbackModel,
+        })
+        return
+      }
+
       const settingsUrl = `${API_BASE}/api/v1/settings`
       const response = await fetch(settingsUrl, {
         method: 'GET',
