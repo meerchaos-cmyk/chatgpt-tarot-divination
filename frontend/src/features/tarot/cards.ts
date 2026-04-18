@@ -417,7 +417,7 @@ function createMinorArcana(suit: Suit, suitNameCn: string): TarotCard[] {
       type: 'minor',
       suit,
       number: i,
-      image: `/cards/minor/${suit}/${i.toString().padStart(2, '0')}.jpg`,
+      image: `/TarotWhisper/public/cards/minor/${suit}/${i.toString().padStart(2, '0')}.jpg`,
       keywords: numberMeanings[i],
       meaning: {
         upright: `在${theme}领域，${numberMeanings[i].upright.join('、')}。`,

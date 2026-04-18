@@ -5,6 +5,7 @@ import { saveHistory } from '@/utils/divinationHistory'
 import { allCards } from '@/features/tarot/cards'
 import { getDefaultSpread } from '@/features/tarot/spreads'
 import type { DrawnCard, Spread, Reading } from '@/features/tarot/types'
+import { streamDirectFromOpenAI } from '@/lib/pureFrontendDivination'
 
 export type ReadingPhase = 'question' | 'spread' | 'shuffle' | 'draw' | 'reveal' | 'interpret'
 
@@ -120,6 +121,32 @@ export function useTarotReading() {
       }
 
       let buffer = ''
+
+      if (!API_BASE) {
+        await streamDirectFromOpenAI({
+          body: {
+            prompt_type: 'tarot',
+            prompt,
+          },
+          customOpenAISettings,
+          onToken(token) {
+            buffer += token
+            setInterpretation(buffer)
+          },
+        })
+        if (buffer) {
+          saveHistory({
+            type: 'tarot',
+            title: '塔罗牌占卜',
+            prompt: readingSnapshot.question,
+            result: buffer,
+          })
+        }
+        if (!buffer) {
+          setError('未收到有效解读内容，请稍后重试。')
+        }
+        return
+      }
 
       await fetchEventSource(`${API_BASE}/api/divination`, {
         method: 'POST',

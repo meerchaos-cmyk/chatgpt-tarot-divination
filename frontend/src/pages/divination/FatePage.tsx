@@ -59,17 +59,6 @@ export default function FatePage() {
               className="mt-2"
             />
           </div>
-          <div className="text-center text-sm">
-            <a
-              href="https://github.com/alongLFB/alonglfb.github.io/blob/master/images/wechatpay.png"
-              className="text-primary hover:underline"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              请作者喝杯咖啡
-            </a>{' '}
-            - 🤗 Along Li
-          </div>
         </div>
 
         <div className="flex gap-2 md:gap-3 justify-center pt-4 md:pt-6">

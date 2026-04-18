@@ -22,6 +22,22 @@
 
 ---
 
+## 架构说明（为什么有后端）
+
+本项目支持两种运行方式：
+
+1. **前后端模式（推荐）**
+   - 前端通过 `/api/v1/settings` 获取运行时配置（登录开关、限流、默认模型等）。
+   - 前端通过 `/api/divination` 获取占卜流式结果（SSE）。
+   - 后端负责 Prompt 组装、模型请求代理、可选鉴权与限流。
+
+2. **纯前端模式**
+   - 不配置 `VITE_API_BASE`，前端直接调用模型 API。
+   - 由前端执行 Prompt 组装与流式解析。
+   - 不依赖后端登录/限流能力，且浏览器端保存 API Key 存在泄露风险。
+
+---
+
 ## 四种部署方式
 
 ### 方式一：Vercel 一键部署（推荐）⭐
@@ -35,7 +51,7 @@
 2. 在部署时配置环境变量：
    - `api_key`：必填，你的 OpenAI API Key
    - `api_base`：可选，API 地址（默认为 OpenAI 官方地址）
-   - 其他可选参数：`model`、`github_client_id`、`github_client_secret` 等
+   - 其他可选参数：`model`、`max_tokens`、`github_client_id`、`github_client_secret` 等
 
 3. 部署完成后，Vercel 会自动分配一个访问域名
 
@@ -66,6 +82,7 @@ services:
       - api_key=sk-xxx                    # 必填：OpenAI API Key
       # - api_base=https://api.openai.com/v1  # 可选：API 地址
       # - model=gpt-3.5-turbo              # 可选：模型名称
+      # - max_tokens=2000                  # 可选：单次最大输出 token，防止回答被截断
       # - rate_limit=10/minute             # 可选：速率限制
       # - user_rate_limit=600/hour         # 可选：用户速率限制
       - github_client_id=xxx               # 可选：GitHub OAuth
@@ -97,6 +114,7 @@ docker-compose up -d
 ```bash
 api_key=sk-xxxx                         # 必填：OpenAI API Key
 api_base=https://api.openai.com/v1      # 可选：API 地址
+max_tokens=2000                         # 可选：单次最大输出 token
 github_client_id=xxx                     # 可选：GitHub OAuth
 github_client_secret=xxx                 # 可选：GitHub OAuth
 ad_client=ca-pub-xxx                     # 可选：广告客户端
