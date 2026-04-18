@@ -36,6 +36,19 @@ VITE_ROUTER_MODE=hash
 
 这样打包后会使用 `HashRouter`，刷新或直达子路由不会再触发平台 404。
 
+
+如果你的 EdgeOne 项目是“从仓库根目录构建”（不是 `frontend/` 子目录），可直接在仓库根目录放置 `edgeone.json`：
+
+```json
+{
+  "installCommand": "cd frontend && pnpm install",
+  "buildCommand": "cd frontend && VITE_ROUTER_MODE=hash pnpm build",
+  "outputDirectory": "frontend/dist"
+}
+```
+
+这能避免平台在根目录找不到 `index.html`（典型报错就是 `404: NOT_FOUND / The page does not exist`）。
+
 部署后请确认：
 
 1. 构建输出目录为 `dist`
