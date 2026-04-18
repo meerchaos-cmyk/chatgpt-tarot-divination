@@ -32,6 +32,8 @@ pnpm preview
 ```bash
 # 在 EdgeOne Pages 的环境变量里添加
 VITE_ROUTER_MODE=hash
+# 后端 API 地址（必须是可公网访问的后端域名）
+VITE_API_BASE=https://your-api-domain.com
 ```
 
 这样打包后会使用 `HashRouter`，刷新或直达子路由不会再触发平台 404。
@@ -48,6 +50,8 @@ VITE_ROUTER_MODE=hash
 ```
 
 这能避免平台在根目录找不到 `index.html`（典型报错就是 `404: NOT_FOUND / The page does not exist`）。
+
+> 如果你看到 `Failed to fetch settings: Unexpected token '<' ...`，通常说明前端请求到了 HTML 页面而不是后端 JSON 接口。请检查 `VITE_API_BASE` 是否正确指向后端服务。
 
 部署后请确认：
 
