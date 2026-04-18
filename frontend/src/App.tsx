@@ -1,24 +1,28 @@
-import { useEffect, useState } from 'react'
+import { lazy, Suspense, useCallback, useEffect, useState } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from '@/components/ui/sonner'
 import { useGlobalState } from '@/store'
-import MarketPage from '@/pages/Market'
-import AboutPage from '@/pages/About'
-import SettingsPage from '@/pages/Settings'
-import LoginPage from '@/pages/Login'
-import HistoryPage from '@/pages/History'
-import TarotPage from '@/pages/divination/TarotPage'
-import BirthdayPage from '@/pages/divination/BirthdayPage'
-import NewNamePage from '@/pages/divination/NewNamePage'
-import NamePage from '@/pages/divination/NamePage'
-import DreamPage from '@/pages/divination/DreamPage'
-import PlumFlowerPage from '@/pages/divination/PlumFlowerPage'
-import FatePage from '@/pages/divination/FatePage'
 import { Alert, AlertDescription } from '@/components/ui/alert'
 import { Sparkles } from 'lucide-react'
 import MainLayout from '@/layouts/MainLayout'
 
 const API_BASE = import.meta.env.VITE_API_BASE || ''
+const MarketPage = lazy(() => import('@/pages/Market'))
+const AboutPage = lazy(() => import('@/pages/About'))
+const SettingsPage = lazy(() => import('@/pages/Settings'))
+const LoginPage = lazy(() => import('@/pages/Login'))
+const HistoryPage = lazy(() => import('@/pages/History'))
+const TarotPage = lazy(() => import('@/pages/divination/TarotPage'))
+const BirthdayPage = lazy(() => import('@/pages/divination/BirthdayPage'))
+const NewNamePage = lazy(() => import('@/pages/divination/NewNamePage'))
+const NamePage = lazy(() => import('@/pages/divination/NamePage'))
+const DreamPage = lazy(() => import('@/pages/divination/DreamPage'))
+const PlumFlowerPage = lazy(() => import('@/pages/divination/PlumFlowerPage'))
+const FatePage = lazy(() => import('@/pages/divination/FatePage'))
+
+function RouteLoadingFallback() {
+  return <div className="text-center py-12 text-muted-foreground">页面加载中...</div>
+}
 
 function App() {
   const {
@@ -29,7 +33,7 @@ function App() {
 
   const [loading, setLoading] = useState(false)
 
-  const fetchSettings = async () => {
+  const fetchSettings = useCallback(async () => {
     setLoading(true)
     try {
       const response = await fetch(`${API_BASE}/api/v1/settings`, {
@@ -48,21 +52,21 @@ function App() {
           error: `Failed to fetch settings: ${response.status} ${response.statusText}`,
         })
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error)
+      const message = error instanceof Error ? error.message : 'unknown error'
       setSettings({
         fetched: true,
-        error: `Failed to fetch settings: ${error.message}`,
+        error: `Failed to fetch settings: ${message}`,
       })
     } finally {
       setLoading(false)
     }
-  }
+  }, [jwt, setSettings])
 
   useEffect(() => {
     fetchSettings()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [fetchSettings])
 
   return (
     <>
@@ -82,21 +86,23 @@ function App() {
 
       <MainLayout>
         {settings.fetched && !settings.error ? (
-          <Routes>
-            <Route path="/" element={<MarketPage />} />
-            <Route path="/about" element={<AboutPage />} />
-            <Route path="/divination/tarot" element={<TarotPage />} />
-            <Route path="/divination/birthday" element={<BirthdayPage />} />
-            <Route path="/divination/new_name" element={<NewNamePage />} />
-            <Route path="/divination/name" element={<NamePage />} />
-            <Route path="/divination/dream" element={<DreamPage />} />
-            <Route path="/divination/plum_flower" element={<PlumFlowerPage />} />
-            <Route path="/divination/fate" element={<FatePage />} />
-            <Route path="/settings" element={<SettingsPage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/login/:login_type" element={<LoginPage />} />
-            <Route path="/history/:type" element={<HistoryPage />} />
-          </Routes>
+          <Suspense fallback={<RouteLoadingFallback />}>
+            <Routes>
+              <Route path="/" element={<MarketPage />} />
+              <Route path="/about" element={<AboutPage />} />
+              <Route path="/divination/tarot" element={<TarotPage />} />
+              <Route path="/divination/birthday" element={<BirthdayPage />} />
+              <Route path="/divination/new_name" element={<NewNamePage />} />
+              <Route path="/divination/name" element={<NamePage />} />
+              <Route path="/divination/dream" element={<DreamPage />} />
+              <Route path="/divination/plum_flower" element={<PlumFlowerPage />} />
+              <Route path="/divination/fate" element={<FatePage />} />
+              <Route path="/settings" element={<SettingsPage />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/login/:login_type" element={<LoginPage />} />
+              <Route path="/history/:type" element={<HistoryPage />} />
+            </Routes>
+          </Suspense>
         ) : settings.error ? (
           <Alert variant="destructive" className="glass">
             <AlertDescription>{settings.error}</AlertDescription>
