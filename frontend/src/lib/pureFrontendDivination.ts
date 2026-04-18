@@ -50,6 +50,7 @@ const FALLBACK_CONFIG: LLMConfig = {
 }
 
 const RATE_LIMIT_PER_HOUR = Number(import.meta.env.VITE_RATE_LIMIT_PER_HOUR || 10)
+const MAX_OUTPUT_TOKENS = Number(import.meta.env.VITE_MAX_OUTPUT_TOKENS || 2000)
 const RATE_LIMIT_STORAGE_KEY = 'pure-frontend-rate-limit'
 
 function checkRateLimit(): boolean {
@@ -185,7 +186,7 @@ export async function streamDirectFromOpenAI(options: {
     body: JSON.stringify({
       model: config.model,
       stream: true,
-      max_tokens: 1000,
+      max_tokens: Number.isFinite(MAX_OUTPUT_TOKENS) ? MAX_OUTPUT_TOKENS : 2000,
       temperature: 0.9,
       top_p: 1,
       messages: [

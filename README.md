@@ -51,7 +51,7 @@
 2. 在部署时配置环境变量：
    - `api_key`：必填，你的 OpenAI API Key
    - `api_base`：可选，API 地址（默认为 OpenAI 官方地址）
-   - 其他可选参数：`model`、`github_client_id`、`github_client_secret` 等
+   - 其他可选参数：`model`、`max_tokens`、`github_client_id`、`github_client_secret` 等
 
 3. 部署完成后，Vercel 会自动分配一个访问域名
 
@@ -82,6 +82,7 @@ services:
       - api_key=sk-xxx                    # 必填：OpenAI API Key
       # - api_base=https://api.openai.com/v1  # 可选：API 地址
       # - model=gpt-3.5-turbo              # 可选：模型名称
+      # - max_tokens=2000                  # 可选：单次最大输出 token，防止回答被截断
       # - rate_limit=10/minute             # 可选：速率限制
       # - user_rate_limit=600/hour         # 可选：用户速率限制
       - github_client_id=xxx               # 可选：GitHub OAuth
@@ -113,6 +114,7 @@ docker-compose up -d
 ```bash
 api_key=sk-xxxx                         # 必填：OpenAI API Key
 api_base=https://api.openai.com/v1      # 可选：API 地址
+max_tokens=2000                         # 可选：单次最大输出 token
 github_client_id=xxx                     # 可选：GitHub OAuth
 github_client_secret=xxx                 # 可选：GitHub OAuth
 ad_client=ca-pub-xxx                     # 可选：广告客户端

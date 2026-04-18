@@ -1,9 +1,10 @@
-import { ReactNode, useEffect } from 'react'
+import { ReactNode, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Github, LogIn, LogOut, Moon, Settings, Sparkles, Sun, Home } from 'lucide-react'
+import { LogIn, LogOut, Moon, Settings, Sparkles, Sun, Home } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { useGlobalState } from '@/store'
+import { BackgroundMusic } from '@/components/BackgroundMusic'
 
 interface MainLayoutProps {
   children: ReactNode
@@ -12,6 +13,7 @@ interface MainLayoutProps {
 export default function MainLayout({ children }: MainLayoutProps) {
   const navigate = useNavigate()
   const { isDark, toggleDark, settings, setJwt } = useGlobalState()
+  const [ripples, setRipples] = useState<Array<{ id: number; x: number; y: number }>>([])
 
   useEffect(() => {
     if (isDark) {
@@ -26,8 +28,30 @@ export default function MainLayout({ children }: MainLayoutProps) {
     window.location.reload()
   }
 
+  const addRipple = (x: number, y: number) => {
+    const id = Date.now() + Math.random()
+    setRipples((prev) => [...prev, { id, x, y }])
+    window.setTimeout(() => {
+      setRipples((prev) => prev.filter((r) => r.id !== id))
+    }, 650)
+  }
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-primary/5 text-foreground overflow-x-hidden selection:bg-primary/30">
+    <div
+      className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-primary/5 text-foreground overflow-x-hidden selection:bg-primary/30"
+      onPointerDown={(event) => addRipple(event.clientX, event.clientY)}
+    >
+      <BackgroundMusic />
+      <div className="cosmic-rotating-bg" />
+      <div className="fixed inset-0 pointer-events-none z-20">
+        {ripples.map((ripple) => (
+          <span
+            key={ripple.id}
+            className="click-ripple"
+            style={{ left: ripple.x, top: ripple.y }}
+          />
+        ))}
+      </div>
       <div className="fixed inset-0 -z-10 overflow-hidden pointer-events-none">
         <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[100px] animate-pulse" />
         <div className="absolute bottom-0 right-1/4 w-[400px] h-[400px] bg-secondary/10 rounded-full blur-[80px] animate-pulse delay-1000" />
@@ -92,15 +116,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
                   {isDark ? <Sun className="h-5 w-5" /> : <Moon className="h-5 w-5" />}
                 </Button>
 
-                <Button variant="ghost" size="icon" asChild>
-                  <a
-                    href="https://github.com/dreamhunter2333/chatgpt-tarot-divination"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <Github className="h-5 w-5" />
-                  </a>
-                </Button>
               </div>
             </div>
 

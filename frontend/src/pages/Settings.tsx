@@ -8,6 +8,9 @@ import { DivinationCardHeader } from '@/components/DivinationCardHeader'
 import { useGlobalState } from '@/store'
 import { Save, Settings as SettingsIcon, ExternalLink, CheckCircle2 } from 'lucide-react'
 
+const DEFAULT_OPENAI_BASE_URL = 'https://api.openai.com/v1'
+const DEFAULT_OPENAI_MODEL = 'gpt-4o-mini'
+
 export default function SettingsPage() {
   const { customOpenAISettings, setCustomOpenAISettings, settings } = useGlobalState()
 
@@ -24,9 +27,9 @@ export default function SettingsPage() {
   useEffect(() => {
     setTempSettings({
       enable: customOpenAISettings.enable,
-      baseUrl: customOpenAISettings.baseUrl || settings.default_api_base || '',
+      baseUrl: customOpenAISettings.baseUrl || DEFAULT_OPENAI_BASE_URL,
       apiKey: customOpenAISettings.apiKey || '',
-      model: customOpenAISettings.model || settings.default_model || '',
+      model: customOpenAISettings.model || DEFAULT_OPENAI_MODEL,
     })
   }, [customOpenAISettings, settings])
 
@@ -111,7 +114,7 @@ export default function SettingsPage() {
               onChange={(e) =>
                 setTempSettings({ ...tempSettings, baseUrl: e.target.value })
               }
-              placeholder="https://api.openai.com"
+              placeholder={DEFAULT_OPENAI_BASE_URL}
               className="h-11"
             />
           </div>
@@ -151,7 +154,7 @@ export default function SettingsPage() {
               onChange={(e) =>
                 setTempSettings({ ...tempSettings, model: e.target.value })
               }
-              placeholder="gpt-4"
+              placeholder={DEFAULT_OPENAI_MODEL}
               className="h-11"
             />
           </div>

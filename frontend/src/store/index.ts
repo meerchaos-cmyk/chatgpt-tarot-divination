@@ -37,7 +37,7 @@ interface GlobalState {
 export const useGlobalState = create<GlobalState>()(
   persist(
     (set) => ({
-      isDark: false,
+      isDark: true,
       jwt: '',
       settings: { fetched: false, error: null },
       customOpenAISettings: { enable: false, baseUrl: '', apiKey: '', model: '' },

@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     api_key: str = Field(default="", exclude=True)
     api_base: str = "https://api.openai.com/v1"
     model: str = "gpt-3.5-turbo"
+    max_tokens: int = 2000
 
     # github oauth login settings
     github_client_id: str = ""

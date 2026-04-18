@@ -31,6 +31,7 @@ React + Vite 前端项目。
 VITE_FALLBACK_API_BASE=https://api.openai.com/v1
 VITE_FALLBACK_API_KEY=sk-xxxx
 VITE_FALLBACK_MODEL=gpt-4o-mini
+VITE_MAX_OUTPUT_TOKENS=2000
 
 # 默认 Key 的前端限流（每小时，默认 10）
 VITE_RATE_LIMIT_PER_HOUR=10
@@ -69,6 +70,7 @@ VITE_RATE_LIMIT_PER_HOUR=10
 说明：
 - 你说的“api 和密钥、限流”都已支持（对应 `VITE_FALLBACK_API_BASE / KEY / RATE_LIMIT_PER_HOUR`）。
 - 如果用户在页面设置里填了自己的 API 配置，会自动覆盖默认值，不占默认 key 限额。
+- 如果你觉得 AI 输出总被截断，调大 `VITE_MAX_OUTPUT_TOKENS`（例如 3000 或 4000）。
 
 ## 本地开发
 
