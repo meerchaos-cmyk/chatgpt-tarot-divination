@@ -1,4 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
+import { Music2, Volume2, VolumeX } from 'lucide-react'
+
+import { cn } from '@/lib/utils'
 
 interface MusicOption {
   label: string
@@ -12,7 +15,11 @@ const MUSIC_OPTIONS: MusicOption[] = [
 
 const STORAGE_KEY = 'background-music-settings'
 
-export function BackgroundMusic() {
+interface BackgroundMusicProps {
+  className?: string
+}
+
+export function BackgroundMusic({ className }: BackgroundMusicProps) {
   const audioRef = useRef<HTMLAudioElement | null>(null)
   const [isMuted, setIsMuted] = useState(true)
   const [selectedMusic, setSelectedMusic] = useState(MUSIC_OPTIONS[0].value)
@@ -55,18 +62,26 @@ export function BackgroundMusic() {
   return (
     <>
       <audio ref={audioRef} src={selectedMusic} autoPlay loop preload="auto" />
-      <div className="fixed top-20 right-4 md:top-5 md:right-24 z-[70] flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-purple-100/90 backdrop-blur-md">
+      <div
+        className={cn(
+          'inline-flex h-10 items-center gap-1 rounded-md border border-border/60 bg-card/70 px-2 text-foreground shadow-sm backdrop-blur-sm',
+          className
+        )}
+      >
+        <Music2 className="h-4 w-4 text-primary" />
         <button
           type="button"
           onClick={() => setIsMuted((prev) => !prev)}
-          className="rounded-full px-2 py-1 hover:bg-white/10 transition-colors"
+          className="inline-flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground transition-colors hover:bg-accent hover:text-accent-foreground"
+          title={isMuted ? '开启背景音乐' : '关闭背景音乐'}
+          aria-label={isMuted ? '开启背景音乐' : '关闭背景音乐'}
         >
-          {isMuted ? '🔇' : '🔊'}
+          {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         </button>
         <select
           value={selectedMusic}
           onChange={(event) => setSelectedMusic(event.target.value)}
-          className="rounded-full border border-white/10 bg-black/20 px-2 py-1 text-xs outline-none"
+          className="h-8 rounded-md border border-border/70 bg-background/80 px-2 text-xs text-foreground outline-none transition-colors hover:bg-accent/70"
           title="选择背景音乐"
           aria-label="选择背景音乐"
         >
