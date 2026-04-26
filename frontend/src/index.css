@@ -200,6 +200,15 @@
   .tarot-animate-shuffle {
     animation: tarot-shuffle 0.5s ease-in-out infinite;
   }
+
+  .tarot-rainbow-glow {
+    box-shadow:
+      0 0 0 1px rgba(255, 255, 255, 0.15),
+      0 0 12px rgba(167, 139, 250, 0.55),
+      0 0 18px rgba(56, 189, 248, 0.45),
+      0 0 24px rgba(244, 114, 182, 0.4),
+      0 0 30px rgba(251, 191, 36, 0.32);
+  }
 }
 
 @keyframes tarot-cursor-blink {
