@@ -55,7 +55,7 @@ export function BackgroundMusic() {
   return (
     <>
       <audio ref={audioRef} src={selectedMusic} autoPlay loop preload="auto" />
-      <div className="fixed top-5 left-5 z-50 flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-purple-100/90 backdrop-blur-md">
+      <div className="fixed top-20 right-4 md:top-5 md:right-24 z-[70] flex items-center gap-2 rounded-full border border-white/10 bg-black/30 px-3 py-2 text-xs text-purple-100/90 backdrop-blur-md">
         <button
           type="button"
           onClick={() => setIsMuted((prev) => !prev)}
