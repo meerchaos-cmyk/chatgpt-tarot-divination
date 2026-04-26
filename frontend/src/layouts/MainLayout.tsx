@@ -41,7 +41,6 @@ export default function MainLayout({ children }: MainLayoutProps) {
       className="min-h-screen bg-gradient-to-br from-background via-muted/10 to-primary/5 text-foreground overflow-x-hidden selection:bg-primary/30"
       onPointerDown={(event) => addRipple(event.clientX, event.clientY)}
     >
-      <BackgroundMusic />
       <div className="cosmic-rotating-bg" />
       <div className="fixed inset-0 pointer-events-none z-20">
         {ripples.map((ripple) => (
@@ -63,7 +62,7 @@ export default function MainLayout({ children }: MainLayoutProps) {
             initial={{ y: -20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ duration: 0.5 }}
-            className="backdrop-blur-md bg-card/40 border border-white/10 rounded-2xl shadow-lg p-4 mb-6 sticky top-2 z-50"
+            className="backdrop-blur-md bg-card/80 dark:bg-card/40 border border-border/70 dark:border-white/10 rounded-2xl shadow-lg p-4 mb-6 sticky top-2 z-50"
           >
             <div className="flex items-center justify-between">
               <Link to="/" className="flex items-center gap-2 group">
@@ -80,6 +79,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
               </Link>
 
               <div className="flex items-center gap-1 md:gap-2">
+                <BackgroundMusic />
+
                 <Button variant="ghost" size="icon" onClick={() => navigate('/')} title="主页">
                   <Home className="h-5 w-5" />
                 </Button>

@@ -40,7 +40,7 @@ export default function MarketPage() {
               whileTap={{ scale: 0.95 }}
             >
               <Card
-                className="group relative cursor-pointer border-primary/20 bg-card/40 backdrop-blur-sm overflow-hidden transition-colors hover:border-primary/50 hover:shadow-[0_0_30px_-5px_hsl(var(--primary)/0.3)]"
+                className="group relative cursor-pointer border-primary/30 bg-card/85 dark:bg-card/40 backdrop-blur-sm overflow-hidden transition-colors hover:border-primary/60 hover:shadow-[0_0_30px_-5px_hsl(var(--primary)/0.3)]"
                 onClick={() => navigate(`/divination/${option.key}`)}
               >
                 <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -54,7 +54,7 @@ export default function MarketPage() {
                       {option.label}
                     </CardTitle>
                   </div>
-                  <CardDescription className="text-sm md:text-base line-clamp-2">
+                  <CardDescription className="text-sm md:text-base line-clamp-2 text-foreground/70 dark:text-muted-foreground">
                     {option.description}
                   </CardDescription>
                 </CardHeader>
@@ -76,7 +76,7 @@ export default function MarketPage() {
           whileTap={{ scale: 0.95 }}
         >
           <Card
-            className="group relative cursor-pointer border-secondary/20 bg-card/40 backdrop-blur-sm overflow-hidden transition-colors hover:border-secondary/50 hover:shadow-[0_0_30px_-5px_hsl(var(--secondary)/0.3)]"
+            className="group relative cursor-pointer border-secondary/30 bg-card/85 dark:bg-card/40 backdrop-blur-sm overflow-hidden transition-colors hover:border-secondary/60 hover:shadow-[0_0_30px_-5px_hsl(var(--secondary)/0.3)]"
             onClick={() => navigate('/about')}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-secondary/10 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -88,7 +88,7 @@ export default function MarketPage() {
                 </div>
                 <CardTitle className="text-lg md:text-xl font-serif tracking-wide">关于占卜</CardTitle>
               </div>
-              <CardDescription className="text-sm md:text-base">
+              <CardDescription className="text-sm md:text-base text-foreground/70 dark:text-muted-foreground">
                 了解各种占卜方式的起源与含义
               </CardDescription>
             </CardHeader>
