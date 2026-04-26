@@ -7,6 +7,7 @@ interface TarotCardProps {
   isRevealed?: boolean
   onClick?: () => void
   size?: 'sm' | 'md' | 'lg'
+  showDetailsOnHover?: boolean
 }
 
 const SUIT_SYMBOL: Record<string, string> = {
@@ -22,6 +23,7 @@ export function TarotCard({
   isRevealed = false,
   onClick,
   size = 'md',
+  showDetailsOnHover = false,
 }: TarotCardProps) {
   const [imageError, setImageError] = useState(false)
 
@@ -98,6 +100,27 @@ export function TarotCard({
           <span className="text-sm text-red-400 font-medium tracking-wide flex items-center gap-1">
             <span className="inline-block transform rotate-180">⇧</span> 逆位
           </span>
+        </div>
+      )}
+
+      {isRevealed && showDetailsOnHover && (
+        <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-4 w-72 -translate-x-1/2 rounded-xl border border-amber-400/30 bg-[#12091F]/95 p-4 text-left opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-1">
+          <h4 className="mb-2 text-sm font-semibold tracking-wide text-amber-100">
+            {card.nameCn} · {isReversed ? '逆位' : '正位'}
+          </h4>
+          <p className="mb-2 line-clamp-3 text-xs leading-relaxed text-purple-100/85">
+            {isReversed ? card.meaning.reversed : card.meaning.upright}
+          </p>
+          <div className="flex flex-wrap gap-1.5">
+            {(isReversed ? card.keywords.reversed : card.keywords.upright).slice(0, 4).map((keyword) => (
+              <span
+                key={`${card.id}-${keyword}`}
+                className="rounded-full border border-purple-300/20 bg-purple-500/15 px-2 py-0.5 text-[10px] text-purple-100/90"
+              >
+                {keyword}
+              </span>
+            ))}
+          </div>
         </div>
       )}
     </button>
