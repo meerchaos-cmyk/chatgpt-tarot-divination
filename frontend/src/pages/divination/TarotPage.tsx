@@ -105,17 +105,16 @@ export default function TarotPage() {
               <p className={`${isDark ? 'text-purple-200/60' : 'text-violet-500/80'} text-lg font-light`}>集中精神，让问题在心中浮现。</p>
             </div>
 
-            <div className="tarot-glass p-1 rounded-2xl relative group">
-              <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-purple-600 rounded-2xl opacity-20 group-focus-within:opacity-50 transition duration-500 blur-sm" />
+            <div className="tarot-question-frame">
               <textarea
                 value={question}
                 onChange={(event) => setQuestion(event.target.value)}
                 maxLength={100}
                 placeholder="例如：我在事业上应该采取什么行动？"
-                className={`w-full h-48 px-6 py-6 rounded-xl text-xl resize-none focus:outline-none leading-relaxed ${
+                className={`tarot-question-surface w-full h-48 px-6 py-6 text-xl resize-none focus:outline-none leading-relaxed ${
                   isDark
                     ? 'bg-[#0F0518]/80 text-amber-50 placeholder-purple-500/30'
-                    : 'bg-white/90 text-indigo-900 placeholder-violet-400/60 border border-violet-100'
+                    : 'bg-white/95 text-indigo-900 placeholder-violet-400/60'
                 }`}
                 spellCheck={false}
               />
