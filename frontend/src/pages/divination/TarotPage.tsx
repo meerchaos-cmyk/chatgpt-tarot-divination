@@ -14,15 +14,12 @@ export default function TarotPage() {
     question,
     spread,
     drawnCards,
-    revealedCount,
     interpretation,
     isInterpreting,
     error,
     setQuestion,
     setSpread,
     shuffleAndDraw,
-    revealNextCard,
-    revealAllCards,
     startInterpretation,
     reset,
     goToPhase,
@@ -178,7 +175,7 @@ export default function TarotPage() {
 
             <div className={`relative w-full min-h-[480px] md:min-h-[620px] flex items-center justify-center p-6 md:p-10 rounded-[2rem] border backdrop-blur-sm shadow-2xl ${isDark ? 'border-white/5 bg-gradient-to-b from-[#1A0B2E]/50 to-transparent' : 'border-violet-200/80 bg-gradient-to-b from-white/80 to-violet-50/40'}`}>
               <div className={`flex flex-wrap justify-center items-center gap-10 transition-all duration-700 ${spread.id === 'celtic-cross' ? 'max-w-5xl' : ''}`}>
-                {drawnCards.map((drawn, index) => (
+                {drawnCards.map((drawn) => (
                   <div key={drawn.position.id} className="flex flex-col items-center gap-4 group">
                     <span className="absolute -top-8 text-sm text-purple-300/40 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
                       {drawn.position.nameCn}
@@ -199,13 +196,13 @@ export default function TarotPage() {
             </div>
 
             <div className="mt-10 flex gap-4 items-center">
-              {phase === 'draw' && revealedCount < drawnCards.length && (
+              {phase === 'draw' && (
                 <button
                   type="button"
-                  onClick={revealAllCards}
+                  onClick={() => goToPhase('reveal')}
                   className={`px-8 py-3 border rounded-full transition-all uppercase tracking-widest ${isDark ? 'border-purple-500/30 text-purple-200 hover:bg-purple-800/30' : 'border-violet-300 text-violet-600 hover:bg-violet-100/70'}`}
                 >
-                  全部翻开
+                  进入洞察前确认
                 </button>
               )}
 
