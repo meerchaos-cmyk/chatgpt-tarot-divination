@@ -63,7 +63,7 @@ export function TarotCard({
       <div
         className={`relative w-full h-full transition-transform duration-700 tarot-3d shadow-2xl ${
           shouldShowFront ? 'tarot-rotate-y-180' : ''
-        } ${shouldShowFront ? 'group-hover:tarot-rainbow-glow' : ''} group-hover:scale-105 ease-out`}
+        } ${shouldShowFront && enableHoverReveal ? 'group-hover:tarot-rainbow-glow' : ''} group-hover:scale-105 ease-out`}
       >
         <div className="absolute w-full h-full tarot-backface rounded-xl overflow-hidden border-2 border-amber-900/50">
           <div className="w-full h-full bg-[#1a0b2e] relative overflow-hidden flex items-center justify-center">
