@@ -8,6 +8,7 @@ interface TarotCardProps {
   onClick?: () => void
   size?: 'sm' | 'md' | 'lg'
   showDetailsOnHover?: boolean
+  enableHoverReveal?: boolean
 }
 
 const SUIT_SYMBOL: Record<string, string> = {
@@ -24,8 +25,10 @@ export function TarotCard({
   onClick,
   size = 'md',
   showDetailsOnHover = false,
+  enableHoverReveal = false,
 }: TarotCardProps) {
   const [imageError, setImageError] = useState(false)
+  const [isPinnedRevealed, setIsPinnedRevealed] = useState(false)
 
   const sizeClasses = {
     sm: 'w-24 h-40',
@@ -36,17 +39,31 @@ export function TarotCard({
   const cardFaceTransform = isReversed && isRevealed
     ? 'rotateY(180deg) rotate(180deg)'
     : 'rotateY(180deg)'
+  const shouldShowFront = isRevealed || isPinnedRevealed
+
+  const revealCard = () => {
+    if (enableHoverReveal) {
+      setIsPinnedRevealed(true)
+    }
+  }
 
   return (
     <button
       type="button"
       className={`relative ${sizeClasses[size]} cursor-pointer tarot-perspective group bg-transparent border-0 p-0`}
-      onClick={onClick}
+      onMouseEnter={revealCard}
+      onClick={() => {
+        if (enableHoverReveal && !shouldShowFront) {
+          setIsPinnedRevealed(true)
+          return
+        }
+        onClick?.()
+      }}
     >
       <div
         className={`relative w-full h-full transition-transform duration-700 tarot-3d shadow-2xl ${
-          isRevealed ? 'tarot-rotate-y-180' : ''
-        } group-hover:scale-105 ease-out`}
+          shouldShowFront ? 'tarot-rotate-y-180' : ''
+        } ${shouldShowFront && enableHoverReveal ? 'group-hover:tarot-rainbow-glow' : ''} group-hover:scale-105 ease-out`}
       >
         <div className="absolute w-full h-full tarot-backface rounded-xl overflow-hidden border-2 border-amber-900/50">
           <div className="w-full h-full bg-[#1a0b2e] relative overflow-hidden flex items-center justify-center">
@@ -95,7 +112,7 @@ export function TarotCard({
         </div>
       </div>
 
-      {isRevealed && isReversed && (
+      {shouldShowFront && isReversed && (
         <div className="absolute -bottom-10 left-1/2 transform -translate-x-1/2 bg-black/80 backdrop-blur-md px-3 py-1 rounded-full border border-red-500/30 shadow-lg">
           <span className="text-sm text-red-400 font-medium tracking-wide flex items-center gap-1">
             <span className="inline-block transform rotate-180">⇧</span> 逆位
@@ -103,7 +120,7 @@ export function TarotCard({
         </div>
       )}
 
-      {isRevealed && showDetailsOnHover && (
+      {shouldShowFront && showDetailsOnHover && (
         <div className="pointer-events-none absolute left-1/2 top-full z-20 mt-4 w-72 -translate-x-1/2 rounded-xl border border-amber-400/30 bg-[#12091F]/95 p-4 text-left opacity-0 shadow-2xl backdrop-blur-md transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-1">
           <h4 className="mb-2 text-sm font-semibold tracking-wide text-amber-100">
             {card.nameCn} · {isReversed ? '逆位' : '正位'}

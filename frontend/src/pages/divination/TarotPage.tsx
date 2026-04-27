@@ -103,12 +103,13 @@ export default function TarotPage() {
       <main className="relative z-10 p-4 md:p-8 min-h-[760px]">
         {phase === 'question' && (
           <div className="mx-auto max-w-2xl animate-in fade-in zoom-in duration-500">
-            <div className="text-center mb-8">
-              <h2 className={`text-3xl md:text-5xl font-serif mb-3 ${isDark ? 'text-amber-100' : 'text-indigo-700'}`}>你寻求什么？</h2>
-              <p className={isDark ? 'text-purple-200/60' : 'text-violet-500/80'}>集中精神，让问题在心中浮现。</p>
+            <div className="text-center mb-10">
+              <h2 className={`text-4xl md:text-5xl font-serif mb-4 drop-shadow-lg ${isDark ? 'text-amber-100' : 'text-indigo-700'}`}>你寻求什么？</h2>
+              <p className={`${isDark ? 'text-purple-200/60' : 'text-violet-500/80'} text-lg font-light`}>集中精神，让问题在心中浮现。</p>
             </div>
 
-            <div className="tarot-glass p-1 rounded-2xl">
+            <div className="tarot-glass p-1 rounded-2xl relative group">
+              <div className="absolute -inset-0.5 bg-gradient-to-r from-amber-500 to-purple-600 rounded-2xl opacity-20 group-focus-within:opacity-50 transition duration-500 blur-sm" />
               <textarea
                 value={question}
                 onChange={(event) => setQuestion(event.target.value)}
@@ -119,6 +120,7 @@ export default function TarotPage() {
                     ? 'bg-[#0F0518]/80 text-amber-50 placeholder-purple-500/30'
                     : 'bg-white/90 text-indigo-900 placeholder-violet-400/60 border border-violet-100'
                 }`}
+                spellCheck={false}
               />
             </div>
 
@@ -178,7 +180,7 @@ export default function TarotPage() {
               <div className={`flex flex-wrap justify-center items-center gap-10 transition-all duration-700 ${spread.id === 'celtic-cross' ? 'max-w-5xl' : ''}`}>
                 {drawnCards.map((drawn, index) => (
                   <div key={drawn.position.id} className="flex flex-col items-center gap-4 group">
-                    <span className="text-xs text-purple-300/40 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                    <span className="absolute -top-8 text-sm text-purple-300/40 uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
                       {drawn.position.nameCn}
                     </span>
                     <TarotCard
@@ -190,7 +192,6 @@ export default function TarotPage() {
                           revealNextCard()
                         }
                       }}
-                      showDetailsOnHover={index < revealedCount}
                     />
                   </div>
                 ))}
@@ -236,7 +237,12 @@ export default function TarotPage() {
             <div className="flex flex-wrap justify-center gap-4 opacity-90">
               {drawnCards.map((drawn) => (
                 <div key={drawn.position.id} className="transform scale-75 origin-top">
-                  <TarotCard card={drawn.card} isRevealed isReversed={drawn.isReversed} size="sm" />
+                  <TarotCard
+                    card={drawn.card}
+                    isRevealed
+                    isReversed={drawn.isReversed}
+                    size="sm"
+                  />
                 </div>
               ))}
             </div>
