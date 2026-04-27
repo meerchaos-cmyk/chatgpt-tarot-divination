@@ -1,0 +1,159 @@
+import { useState } from 'react'
+import { fetchEventSource, EventStreamContentType } from '@microsoft/fetch-event-source'
+import MarkdownIt from 'markdown-it'
+import { useGlobalState } from '@/store'
+import { saveHistory } from '@/utils/divinationHistory'
+import { getDivinationOption } from '@/config/constants'
+import { buildDivinationBody, streamDirectFromOpenAI } from '@/lib/pureFrontendDivination'
+
+const API_BASE = import.meta.env.VITE_API_BASE || ''
+const IS_TAURI = import.meta.env.VITE_IS_TAURI || ''
+const md = new MarkdownIt()
+
+export interface DivinationSubmitParams {
+  prompt: string
+  [key: string]: unknown
+}
+
+export function useDivination(promptType: string) {
+  const { jwt, customOpenAISettings } = useGlobalState()
+  const [result, setResult] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [resultLoading, setResultLoading] = useState(false)
+  const [streaming, setStreaming] = useState(false)
+  const [showDrawer, setShowDrawer] = useState(false)
+
+  const onSubmit = async (params: DivinationSubmitParams) => {
+    try {
+      setLoading(true)
+      setResultLoading(true)
+      setStreaming(false)
+      setResult('')
+      setShowDrawer(true)
+
+      let tmpResultBuffer = ''
+      let firstChunk = true
+
+      const headers: Record<string, string> = {
+        Authorization: `Bearer ${jwt || 'xxx'}`,
+        'Content-Type': 'application/json',
+      }
+
+      if (customOpenAISettings.enable) {
+        headers['x-api-key'] = customOpenAISettings.apiKey
+        headers['x-api-url'] = customOpenAISettings.baseUrl
+        headers['x-api-model'] = customOpenAISettings.model
+      } else if (IS_TAURI) {
+        setResult('请在设置中配置 API BASE URL 和 API KEY')
+        setResultLoading(false)
+        return
+      }
+
+      const body = buildDivinationBody(promptType, params)
+
+      if (!API_BASE) {
+        await streamDirectFromOpenAI({
+          body,
+          customOpenAISettings,
+          onToken(token) {
+            tmpResultBuffer += token
+            setResult(md.render(tmpResultBuffer))
+            if (firstChunk) {
+              firstChunk = false
+              setResultLoading(false)
+              setLoading(false)
+            }
+          },
+        })
+        setStreaming(false)
+        if (tmpResultBuffer && promptType) {
+          const config = getDivinationOption(promptType)
+          if (config) {
+            saveHistory({
+              type: promptType,
+              title: config.title,
+              prompt: params.prompt || '',
+              result: tmpResultBuffer,
+            })
+          }
+        }
+        return
+      }
+
+      await fetchEventSource(`${API_BASE}/api/divination`, {
+        method: 'POST',
+        body: JSON.stringify(body),
+        headers,
+        async onopen(response) {
+          if (response.ok && response.headers.get('content-type') === EventStreamContentType) {
+            setStreaming(true)
+            return
+          }
+
+          if (response.status >= 400) {
+            throw new Error(`${response.status} ${await response.text()}`)
+          }
+        },
+        onmessage(msg) {
+          if (msg.event === 'FatalError') {
+            throw new Error(msg.data)
+          }
+          if (!msg.data) {
+            return
+          }
+          try {
+            const newContent = JSON.parse(msg.data) as string
+            tmpResultBuffer += newContent
+            setResult(md.render(tmpResultBuffer))
+
+            if (firstChunk) {
+              firstChunk = false
+              setResultLoading(false)
+              setLoading(false)
+            }
+          } catch (error) {
+            console.error(error)
+          }
+        },
+        onclose() {
+          setStreaming(false)
+          if (tmpResultBuffer && promptType) {
+            const config = getDivinationOption(promptType)
+            if (config) {
+              saveHistory({
+                type: promptType,
+                title: config.title,
+                prompt: params.prompt || '',
+                result: tmpResultBuffer,
+              })
+            }
+          }
+        },
+        onerror(err) {
+          setResult(`占卜失败: ${err.message}`)
+          setStreaming(false)
+          throw new Error(`占卜失败: ${err.message}`)
+        },
+      })
+    } catch (error: unknown) {
+      console.error(error)
+      const message = error instanceof Error ? error.message : '占卜失败'
+      setResult(message)
+      setStreaming(false)
+    } finally {
+      setLoading(false)
+      setResultLoading(false)
+      setStreaming(false)
+    }
+  }
+
+  return {
+    result,
+    loading,
+    resultLoading,
+    streaming,
+    showDrawer,
+    setShowDrawer,
+    onSubmit,
+  }
+}
