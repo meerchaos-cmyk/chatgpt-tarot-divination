@@ -62,8 +62,8 @@ export default function MarketPage() {
                 <div className="p-6 md:p-8 flex flex-col items-center text-center flex-grow relative z-10">
                   <div className="mb-6 relative">
                     <div className="absolute inset-0 bg-primary/20 blur-xl rounded-full group-hover:bg-primary/40 transition-colors duration-500" />
-                    <div className="relative p-4 rounded-full border border-primary/20 bg-background/50 group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(212,175,55,0.4)] transition-all duration-500">
-                      <Icon className="h-8 w-8 text-primary group-hover:text-amber-300 transition-colors duration-300" strokeWidth={1.5} />
+                    <div className="relative p-4 rounded-full border border-primary/20 bg-background/50 group-hover:border-primary/50 group-hover:shadow-[0_0_20px_rgba(var(--primary-rgb),0.4)] transition-all duration-500">
+                      <Icon className="h-8 w-8 text-primary group-hover:text-primary transition-colors duration-300" strokeWidth={1.5} />
                     </div>
                   </div>
                   
@@ -76,7 +76,7 @@ export default function MarketPage() {
                   </p>
                 </div>
 
-                <div className="p-4 border-t border-white/5 bg-black/20 group-hover:bg-primary/10 transition-colors duration-500 relative z-10 flex items-center justify-center">
+                <div className="p-4 border-t border-border/30 bg-muted/30 group-hover:bg-primary/10 transition-colors duration-500 relative z-10 flex items-center justify-center">
                   <div className="flex items-center text-xs tracking-[0.2em] uppercase text-primary/80 group-hover:text-primary transition-colors">
                     <span>开始祈求</span>
                     <Sparkles className="h-3.5 w-3.5 ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500" />
@@ -104,8 +104,8 @@ export default function MarketPage() {
             <div className="p-6 md:p-8 flex flex-col items-center text-center flex-grow relative z-10">
               <div className="mb-6 relative">
                 <div className="absolute inset-0 bg-secondary/20 blur-xl rounded-full group-hover:bg-secondary/40 transition-colors duration-500" />
-                <div className="relative p-4 rounded-full border border-secondary/20 bg-background/50 group-hover:border-secondary/50 group-hover:shadow-[0_0_20px_rgba(124,58,237,0.4)] transition-all duration-500">
-                  <Info className="h-8 w-8 text-secondary group-hover:text-purple-300 transition-colors duration-300" strokeWidth={1.5} />
+                <div className="relative p-4 rounded-full border border-secondary/20 bg-background/50 group-hover:border-secondary/50 group-hover:shadow-[0_0_20px_rgba(var(--secondary-rgb),0.4)] transition-all duration-500">
+                  <Info className="h-8 w-8 text-secondary group-hover:text-secondary transition-colors duration-300" strokeWidth={1.5} />
                 </div>
               </div>
               
@@ -118,7 +118,7 @@ export default function MarketPage() {
               </p>
             </div>
 
-            <div className="p-4 border-t border-white/5 bg-black/20 group-hover:bg-secondary/10 transition-colors duration-500 relative z-10 flex items-center justify-center">
+            <div className="p-4 border-t border-border/30 bg-muted/30 group-hover:bg-secondary/10 transition-colors duration-500 relative z-10 flex items-center justify-center">
               <div className="flex items-center text-xs tracking-[0.2em] uppercase text-secondary/80 group-hover:text-secondary transition-colors">
                 <span>翻阅典籍</span>
                 <Sparkles className="h-3.5 w-3.5 ml-2 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500" />

@@ -7,7 +7,7 @@ interface InterpretationPanelProps {
 export function InterpretationPanel({ interpretation, isStreaming, error }: InterpretationPanelProps) {
   if (error) {
     return (
-      <div className="w-full rounded-2xl border border-red-500/30 bg-red-900/20 px-6 py-5 text-red-100">
+      <div className="w-full rounded-2xl border border-destructive/30 bg-destructive/10 px-6 py-5 text-destructive">
         {error}
       </div>
     )
@@ -16,11 +16,12 @@ export function InterpretationPanel({ interpretation, isStreaming, error }: Inte
   const content = interpretation || '正在连接神谕，请稍候...'
 
   return (
-    <div className="w-full tarot-glass rounded-2xl border border-purple-500/20 p-6 md:p-8">
-      <div className="max-w-none leading-7 text-purple-50/90 whitespace-pre-wrap">
+    <div className="w-full tarot-glass rounded-3xl border border-primary/20 p-8 md:p-10 shadow-2xl relative overflow-hidden">
+      <div className="absolute top-0 left-0 w-full h-[2px] bg-gradient-to-r from-transparent via-primary/50 to-transparent opacity-50" />
+      <div className="max-w-none leading-[2.2] text-foreground/90 whitespace-pre-wrap font-serif text-[1.05rem] md:text-lg tracking-[0.05em]">
         {content}
+        {isStreaming && <span className="tarot-streaming-cursor" aria-hidden="true" />}
       </div>
-      {isStreaming && <span className="tarot-streaming-cursor" aria-hidden="true" />}
     </div>
   )
 }
