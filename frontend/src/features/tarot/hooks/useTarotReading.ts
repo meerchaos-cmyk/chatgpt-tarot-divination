@@ -1,5 +1,6 @@
 import { useCallback, useMemo, useState } from 'react'
 import { EventStreamContentType, fetchEventSource } from '@microsoft/fetch-event-source'
+import MarkdownIt from 'markdown-it'
 import { useGlobalState } from '@/store'
 import { saveHistory } from '@/utils/divinationHistory'
 import { allCards } from '@/features/tarot/cards'
@@ -11,6 +12,11 @@ export type ReadingPhase = 'question' | 'spread' | 'shuffle' | 'draw' | 'reveal'
 
 const API_BASE = import.meta.env.VITE_API_BASE || ''
 const IS_TAURI = import.meta.env.VITE_IS_TAURI || ''
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  breaks: true,
+})
 
 interface StartInterpretationParams {
   question: string
@@ -131,7 +137,8 @@ export function useTarotReading() {
           customOpenAISettings,
           onToken(token) {
             buffer += token
-            setInterpretation(buffer)
+            const cleanText = buffer.replace(/ \*\*/g, '**').replace(/^ +###/gm, '###')
+            setInterpretation(md.render(cleanText))
           },
         })
         if (buffer) {
@@ -176,7 +183,8 @@ export function useTarotReading() {
           try {
             const content = JSON.parse(message.data) as string
             buffer += content
-            setInterpretation(buffer)
+            const cleanText = buffer.replace(/ \*\*/g, '**').replace(/^ +###/gm, '###')
+            setInterpretation(md.render(cleanText))
           } catch {
             // ignore malformed chunks
           }
