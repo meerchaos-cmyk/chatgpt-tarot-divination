@@ -5,7 +5,11 @@ import { ArrowLeft } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 import MarkdownIt from 'markdown-it'
 
-const md = new MarkdownIt()
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  breaks: true,
+})
 
 export default function AboutPage() {
   const navigate = useNavigate()

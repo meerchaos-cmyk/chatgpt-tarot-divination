@@ -8,7 +8,11 @@ import { buildDivinationBody, streamDirectFromOpenAI } from '@/lib/pureFrontendD
 
 const API_BASE = import.meta.env.VITE_API_BASE || ''
 const IS_TAURI = import.meta.env.VITE_IS_TAURI || ''
-const md = new MarkdownIt()
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  breaks: true,
+})
 
 export interface DivinationSubmitParams {
   prompt: string
@@ -57,7 +61,8 @@ export function useDivination(promptType: string) {
           customOpenAISettings,
           onToken(token) {
             tmpResultBuffer += token
-            setResult(md.render(tmpResultBuffer))
+            const cleanText = tmpResultBuffer.replace(/ \*\*/g, '**').replace(/^ +###/gm, '###')
+            setResult(md.render(cleanText))
             if (firstChunk) {
               firstChunk = false
               setResultLoading(false)
@@ -104,7 +109,8 @@ export function useDivination(promptType: string) {
           try {
             const newContent = JSON.parse(msg.data) as string
             tmpResultBuffer += newContent
-            setResult(md.render(tmpResultBuffer))
+            const cleanText = tmpResultBuffer.replace(/ \*\*/g, '**').replace(/^ +###/gm, '###')
+            setResult(md.render(cleanText))
 
             if (firstChunk) {
               firstChunk = false

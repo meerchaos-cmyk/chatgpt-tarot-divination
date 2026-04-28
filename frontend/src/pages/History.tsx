@@ -9,7 +9,11 @@ import { toast } from 'sonner'
 import { getDivinationOption } from '@/config/constants'
 import MarkdownIt from 'markdown-it'
 
-const md = new MarkdownIt()
+const md = new MarkdownIt({
+  html: true,
+  linkify: true,
+  breaks: true,
+})
 
 export default function HistoryPage() {
   const navigate = useNavigate()
