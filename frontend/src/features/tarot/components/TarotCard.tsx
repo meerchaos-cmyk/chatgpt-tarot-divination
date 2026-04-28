@@ -34,10 +34,8 @@ export function TarotCard({
     lg: 'w-64 h-96',
   }
 
-  // Card face needs rotateY(180deg) for 3D flip, plus rotate(180deg) for reversed cards
-  const cardFaceTransform = isReversed && isRevealed
-    ? 'rotateY(180deg) rotate(180deg)'
-    : 'rotateY(180deg)'
+  // Card face needs rotateY(180deg) for 3D flip
+  const cardFaceTransform = 'rotateY(180deg)'
 
   const handleClick = () => {
     if (!isRevealed && onClick) {
@@ -101,7 +99,7 @@ export function TarotCard({
                 <img
                   src={card.image}
                   alt={card.name}
-                  className="w-full h-full object-cover"
+                  className={`w-full h-full object-cover transition-transform duration-700 ${isReversed && isRevealed ? 'rotate-180' : ''}`}
                   onError={() => setImageError(true)}
                 />
                 {/* 底部渐变遮罩 */}
@@ -115,8 +113,8 @@ export function TarotCard({
                 
                 {/* 卡牌名称 - 翻牌后始终显示 */}
                 {isRevealed && (
-                  <div className="absolute bottom-0 w-full p-3 flex flex-col items-center text-center">
-                     <h3 className="text-secondary font-serif text-base md:text-lg tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
+                  <div className="absolute bottom-0 w-full p-3 flex flex-col items-center text-center z-10">
+                     <h3 className="text-white/95 font-serif text-base md:text-lg tracking-wider drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)]">
                        {card.nameCn}
                      </h3>
 
@@ -127,7 +125,7 @@ export function TarotCard({
                            {(isReversed ? card.keywords.reversed : card.keywords.upright).slice(0, 3).map((keyword) => (
                              <span
                                key={keyword}
-                               className="text-[8px] md:text-[9px] px-1.5 py-0.5 rounded-sm border border-secondary/30 bg-black/60 text-secondary backdrop-blur-sm"
+                               className="text-[8px] md:text-[9px] px-1.5 py-0.5 rounded-sm border border-white/20 bg-black/60 text-white/90 backdrop-blur-sm"
                              >
                                {keyword}
                              </span>
