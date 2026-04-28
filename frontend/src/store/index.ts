@@ -23,15 +23,29 @@ interface Settings {
   purchase_url?: string
 }
 
+export interface MusicOption {
+  label: string
+  value: string
+}
+
+export const MUSIC_OPTIONS: MusicOption[] = [
+  { label: '花间', value: '/TarotWhisper/public/花间.mp3' },
+  { label: 'The Oracle`s Last Card', value: '/TarotWhisper/public/The_Oracle_s_Last_Card.mp3' },
+]
+
 interface GlobalState {
   isDark: boolean
   jwt: string
   settings: Settings
   customOpenAISettings: CustomOpenAISettings
+  isMusicMuted: boolean
+  selectedMusic: string
   toggleDark: () => void
   setJwt: (jwt: string) => void
   setSettings: (settings: Partial<Settings>) => void
   setCustomOpenAISettings: (settings: Partial<CustomOpenAISettings>) => void
+  toggleMusicMuted: () => void
+  setSelectedMusic: (music: string) => void
 }
 
 export const useGlobalState = create<GlobalState>()(
@@ -41,6 +55,8 @@ export const useGlobalState = create<GlobalState>()(
       jwt: '',
       settings: { fetched: false, error: null },
       customOpenAISettings: { enable: false, baseUrl: '', apiKey: '', model: '' },
+      isMusicMuted: true,
+      selectedMusic: MUSIC_OPTIONS[0].value,
       toggleDark: () => set((state) => ({ isDark: !state.isDark })),
       setJwt: (jwt) => set({ jwt }),
       setSettings: (settings) =>
@@ -49,6 +65,8 @@ export const useGlobalState = create<GlobalState>()(
         set((state) => ({
           customOpenAISettings: { ...state.customOpenAISettings, ...settings },
         })),
+      toggleMusicMuted: () => set((state) => ({ isMusicMuted: !state.isMusicMuted })),
+      setSelectedMusic: (music) => set({ selectedMusic: music }),
     }),
     { name: 'global-state' }
   )
