@@ -65,8 +65,8 @@ export default function MainLayout({ children }: MainLayoutProps) {
             transition={{ duration: 0.8, ease: "easeOut" }}
             className="glass rounded-2xl p-4 mb-8 sticky top-4 z-40"
           >
-            <div className="flex items-center justify-between">
-              <Link to="/" className="flex items-center gap-3 group">
+            <div className="flex items-center justify-between gap-2 overflow-hidden">
+              <Link to="/" className="flex items-center gap-2 md:gap-3 group min-w-0 flex-shrink">
                 <div className="relative p-2.5 rounded-full bg-primary/10 group-hover:bg-primary/20 transition-all duration-500 shadow-[0_0_15px_rgba(212,175,55,0.2)]">
                   <Sparkles className="h-5 w-5 text-primary group-hover:rotate-12 transition-transform duration-500" />
                   <div className="absolute inset-0 blur-md bg-primary/20 animate-pulse" />
@@ -81,10 +81,10 @@ export default function MainLayout({ children }: MainLayoutProps) {
                 </div>
               </Link>
 
-              <div className="flex items-center gap-1 md:gap-3">
+              <div className="flex items-center gap-0.5 sm:gap-1 md:gap-3 flex-shrink-0">
                 <BackgroundMusic />
 
-                <Button variant="ghost" size="icon" onClick={() => navigate('/')} title="主页" className="hover:bg-primary/10 hover:text-primary transition-colors rounded-full">
+                <Button variant="ghost" size="icon" onClick={() => navigate('/')} title="主页" className="hidden sm:inline-flex hover:bg-primary/10 hover:text-primary transition-colors rounded-full">
                   <Home className="h-5 w-5" />
                 </Button>
 

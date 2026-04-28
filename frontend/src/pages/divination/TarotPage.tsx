@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CardDeck } from '@/features/tarot/components/CardDeck'
 import { InterpretationPanel } from '@/features/tarot/components/InterpretationPanel'
@@ -31,6 +31,47 @@ export default function TarotPage() {
   } = useTarotReading()
 
   const [showSteps, setShowSteps] = useState(true)
+  // 当前选中（高亮）的卡牌ID，同时只能有一张
+  const [activeCardId, setActiveCardId] = useState<string | null>(null)
+
+  // 仅移动端（<768px）挂载固定背景图，卸载时清理
+  useEffect(() => {
+    const mq = window.matchMedia('(max-width: 767px)')
+    let bgEl: HTMLDivElement | null = null
+
+    const applyBg = () => {
+      if (mq.matches && !bgEl) {
+        bgEl = document.createElement('div')
+        bgEl.id = 'tarot-page-bg'
+        bgEl.style.cssText = `
+          position: fixed;
+          inset: 0;
+          z-index: -5;
+          background-image: url('/TarotWhisper/public/pbg.webp');
+          background-size: cover;
+          background-position: center;
+          background-repeat: no-repeat;
+          pointer-events: none;
+          opacity: 0.3;
+        `
+        if (document.documentElement.classList.contains('dark')) {
+          bgEl.style.opacity = '0.6'
+        }
+        document.body.appendChild(bgEl)
+      } else if (!mq.matches && bgEl) {
+        bgEl.remove()
+        bgEl = null
+      }
+    }
+
+    applyBg()
+    mq.addEventListener('change', applyBg)
+
+    return () => {
+      mq.removeEventListener('change', applyBg)
+      bgEl?.remove()
+    }
+  }, [])
 
   const steps = useMemo(
     () => [
@@ -50,9 +91,7 @@ export default function TarotPage() {
 
   return (
     <div className="space-y-4 md:space-y-6 animate-in fade-in duration-500">
-      <Card className="backdrop-blur-lg bg-card/50 dark:bg-card/30 shadow-xl border-primary/10 hover:border-primary/20 transition-all relative overflow-hidden min-h-[600px]">
-        {/* 移动端背景图 */}
-        <div className="absolute inset-0 md:hidden bg-[url('/TarotWhisper/public/pbg.webp')] bg-cover bg-center pointer-events-none z-0 opacity-30 dark:opacity-60" />
+      <Card className="backdrop-blur-lg bg-card/50 dark:bg-card/30 max-md:bg-card/20 max-md:dark:bg-card/10 shadow-xl border-primary/10 hover:border-primary/20 transition-all relative overflow-hidden min-h-[600px]">
         {/* 装饰光晕 */}
         <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(circle_at_20%_20%,rgba(var(--secondary-rgb),0.06),transparent_30%),radial-gradient(circle_at_80%_70%,rgba(var(--primary-rgb),0.04),transparent_35%)] dark:bg-[radial-gradient(circle_at_20%_20%,rgba(var(--secondary-rgb),0.15),transparent_40%),radial-gradient(circle_at_80%_70%,rgba(var(--primary-rgb),0.08),transparent_45%)] z-0" />
 
@@ -224,24 +263,28 @@ export default function TarotPage() {
                 </div>
               </div>
 
-              <div className="relative w-full min-h-[400px] md:min-h-[520px] flex items-center justify-center p-6 md:p-10 rounded-2xl border border-border/50 bg-card/30 dark:bg-background/20 backdrop-blur-sm shadow-lg overflow-hidden">
+              <div className="relative w-full min-h-[400px] md:min-h-[520px] flex items-center justify-center p-6 md:p-10 rounded-2xl border border-border/50 bg-card/30 dark:bg-background/20 backdrop-blur-sm shadow-lg">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(var(--secondary-rgb),0.05)_0%,transparent_70%)] dark:bg-[radial-gradient(ellipse_at_center,rgba(var(--secondary-rgb),0.1)_0%,transparent_70%)] pointer-events-none" />
 
                 <div className={`flex flex-wrap justify-center items-center gap-8 md:gap-12 transition-all duration-1000 ${spread.id === 'celtic-cross' ? 'max-w-5xl' : ''}`}>
                   {drawnCards.map((drawn, index) => (
-                    <div key={drawn.position.id} className="flex flex-col items-center gap-4 group relative">
-                      <span className="absolute -top-8 text-xs text-primary/50 uppercase tracking-[0.15em] opacity-0 group-hover:opacity-100 transition-opacity duration-300 font-light whitespace-nowrap">
-                        {drawn.position.nameCn}
-                      </span>
+                    <div key={drawn.position.id} className="flex flex-col items-center">
                       <TarotCard
                         card={drawn.card}
                         isReversed={drawn.isReversed}
                         isRevealed={index < revealedCount}
-                        onClick={() => {
+                        positionLabel={drawn.position.nameCn}
+                        isActive={activeCardId === drawn.position.id}
+                        onActiveToggle={() => {
+                          setActiveCardId(prev =>
+                            prev === drawn.position.id ? null : drawn.position.id
+                          )
+                        }}
+                        onClick={index >= revealedCount ? () => {
                           if (index === revealedCount) {
                             revealNextCard()
                           }
-                        }}
+                        } : undefined}
                       />
                     </div>
                   ))}

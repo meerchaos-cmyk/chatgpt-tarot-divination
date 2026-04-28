@@ -299,6 +299,24 @@
       0 0 20px rgba(204, 168, 77, 0.1);
   }
 
+  /* 卡牌选中态 - box-shadow 呼吸发光 */
+  .tarot-card-active-glow {
+    box-shadow:
+      0 0 8px rgba(72, 61, 115, 0.4),
+      0 0 20px rgba(124, 100, 200, 0.3),
+      0 0 40px rgba(204, 168, 77, 0.15),
+      inset 0 0 8px rgba(72, 61, 115, 0.1);
+    animation: tarot-glow-pulse 2.5s ease-in-out infinite;
+  }
+
+  .dark .tarot-card-active-glow {
+    box-shadow:
+      0 0 8px rgba(204, 168, 77, 0.5),
+      0 0 20px rgba(124, 58, 237, 0.3),
+      0 0 40px rgba(204, 168, 77, 0.2),
+      inset 0 0 8px rgba(204, 168, 77, 0.1);
+  }
+
   .tarot-question-frame {
     position: relative;
     padding: 1px;
@@ -392,6 +410,23 @@
 @keyframes tarot-rainbow-border-spin {
   from { transform: rotate(0deg); }
   to { transform: rotate(1turn); }
+}
+
+@keyframes tarot-glow-pulse {
+  0%, 100% {
+    box-shadow:
+      0 0 8px rgba(72, 61, 115, 0.4),
+      0 0 20px rgba(124, 100, 200, 0.3),
+      0 0 40px rgba(204, 168, 77, 0.15),
+      inset 0 0 8px rgba(72, 61, 115, 0.1);
+  }
+  50% {
+    box-shadow:
+      0 0 12px rgba(204, 168, 77, 0.5),
+      0 0 28px rgba(72, 61, 115, 0.35),
+      0 0 50px rgba(124, 100, 200, 0.2),
+      inset 0 0 12px rgba(204, 168, 77, 0.1);
+  }
 }
 
 /* ================================================================

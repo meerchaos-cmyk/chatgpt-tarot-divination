@@ -68,7 +68,7 @@ export function BackgroundMusic({ className }: BackgroundMusicProps) {
           className
         )}
       >
-        <Music2 className="h-4 w-4 text-primary" />
+        <Music2 className="h-4 w-4 text-primary hidden sm:block" />
         <button
           type="button"
           onClick={() => setIsMuted((prev) => !prev)}
@@ -81,7 +81,7 @@ export function BackgroundMusic({ className }: BackgroundMusicProps) {
         <select
           value={selectedMusic}
           onChange={(event) => setSelectedMusic(event.target.value)}
-          className="h-8 rounded-md border border-border/70 bg-background/80 px-2 text-xs text-foreground outline-none transition-colors hover:bg-accent/70"
+          className="h-8 rounded-md border border-border/70 bg-background/80 px-2 text-xs text-foreground outline-none transition-colors hover:bg-accent/70 hidden sm:block"
           title="选择背景音乐"
           aria-label="选择背景音乐"
         >
